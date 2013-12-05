@@ -5,26 +5,33 @@
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/ham-mode
 ;; Version: 1.0
-;; Package-Requires: ((html-to-markdown "1.0"))
-;; Keywords: 
+;; Package-Requires: ((html-to-markdown "1.1"))
+;; Keywords: convenience emulation wp
 ;; Prefix: ham
 ;; Separator: -
 
 ;;; Commentary:
 ;;
+;; ;; ### Seamlessly edit an html file using markdown. ###
 ;; 
-
-;;; Instructions:
+;; HTML as Markdown.
+;; 
+;; This package defines a major-mode, `ham-mode', which allows you to
+;; edit HTML files exactly as if they were Markdown files. Activate it
+;; while visiting an HTML file. The buffer will be converted to Markdown,
+;; but the file will still be kept in HTML format behind the scenes.
+;;  
+;; Instructions
+;; ------
+;; 
+;; To use this package, simply:
+;; 
+;; 1. Install it from Melpa (M-x `package-install' RET ham-mode) and the
+;; `ham-mode' command will be autoloaded.
 ;;
-;; INSTALLATION
-;;
-;; This package is available fom Melpa, you may install it by calling
-;; M-x package-install.
-;;
-;; Alternatively, you can download it manually, place it in your
-;; `load-path' and require it with
-;;
-;;     (require 'ham-mode)
+;; 2. Activate it inside any HTML files you'd like to edit as Markdown.
+;; You can manually invoke M-x `ham-mode', or add it to `auto-mode-alist'
+;; so that it can load automatically.
 
 ;;; License:
 ;;
