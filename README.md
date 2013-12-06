@@ -18,4 +18,9 @@ To use this package, simply:
 `ham-mode` command will be autoloaded.
 2. Activate it inside any HTML files you'd like to edit as Markdown.
 You can manually invoke `M-x ham-mode`, or add it to `auto-mode-alist`
-so that it can load automatically.
+so that it can load automatically.  
+For instance, the following snippet will activate `ham-mode` in any
+`.htm` file containing the word *email*.
+
+    (add-to-list 'auto-mode-alist '(".*email.*\\.html\\'" . ham-mode))
+
