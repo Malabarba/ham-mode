@@ -8,7 +8,17 @@ while visiting an HTML file. The buffer will be converted to Markdown,
 but the file will still be kept in HTML format behind the scenes. Each
 time you save the Markdown buffer, the file will be updated with the
 HTML.
- 
+
+**Why?** This is mainly designed to be used with web interfaces which
+take HTML text (such as some email clients) but whose editors pale in
+comparison to Emacs (obviously).
+
+This major mode will allow you edit your email (or whatever else
+you're writing) with the full power of `markdown-mode`. In fact, you
+will usually be able to write richer structures then client's web
+interface would normally allow you to (lists within lists, for
+instance).
+
 Instructions
 ------
 
@@ -22,5 +32,5 @@ so that it can load automatically.
 For instance, the following snippet will activate `ham-mode` in any
 `.htm` file containing the word *email*.
 
-        (add-to-list 'auto-mode-alist '(".*email.*\\.html\\'" . ham-mode))
+        (add-to-list 'auto-mode-alist '(".*email.*\\.html?\\'" . ham-mode))
 
