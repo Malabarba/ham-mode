@@ -22,5 +22,5 @@ so that it can load automatically.
 For instance, the following snippet will activate `ham-mode` in any
 `.htm` file containing the word *email*.
 
-    (add-to-list 'auto-mode-alist '(".*email.*\\.html\\'" . ham-mode))
+        (add-to-list 'auto-mode-alist '(".*email.*\\.html\\'" . ham-mode))
 
