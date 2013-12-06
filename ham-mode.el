@@ -12,7 +12,7 @@
 
 ;;; Commentary:
 ;;
-;; ;; ### Seamlessly edit an html file using markdown. ###
+;; ### Seamlessly edit an html file using markdown. ###
 ;; 
 ;; HTML as Markdown.
 ;; 

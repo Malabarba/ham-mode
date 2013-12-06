@@ -5,7 +5,9 @@
 This package defines a major-mode, `ham-mode`, which allows you to
 edit HTML files exactly as if they were Markdown files. Activate it
 while visiting an HTML file. The buffer will be converted to Markdown,
-but the file will still be kept in HTML format behind the scenes.
+but the file will still be kept in HTML format behind the scenes. Each
+time you save the Markdown buffer, the file will be updated with the
+HTML.
  
 Instructions
 ------
