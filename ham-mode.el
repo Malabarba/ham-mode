@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/ham-mode
-;; Version: 1.0
+;; Version: 1.1
 ;; Package-Requires: ((html-to-markdown "1.2") (markdown-mode "2.0"))
 ;; Keywords: convenience emulation wp
 ;; Prefix: ham
@@ -67,13 +67,14 @@
 ;; 
 
 ;;; Change Log:
+;; 1.1 - 2013/12/07 - ham-mode-md2html-hook.
 ;; 1.0 - 2013/12/05 - Created File.
 ;;; Code:
 (require 'html-to-markdown)
 (require 'markdown-mode)
 
-(defconst ham-mode-version "1.0" "Version of the ham-mode.el package.")
-(defconst ham-mode-version-int 1 "Version of the ham-mode.el package, as an integer.")
+(defconst ham-mode-version "1.1" "Version of the ham-mode.el package.")
+(defconst ham-mode-version-int 2 "Version of the ham-mode.el package, as an integer.")
 (defun ham-bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
 Please include your emacs and ham-mode versions."
@@ -101,6 +102,14 @@ This variable is a list:
                                (string :tag "String argument."))))
   :group 'html-to-markdown)
 (put 'ham-mode-markdown-command 'risky-local-variable-p t)
+
+(defvar ham-mode-md2html-hook nil
+  "Hook run after the Markdown buffer is saved as HTML.
+
+Functions in this hook must take one argument, the file name.
+They also shouldn't call `save-buffer' or anything like that,
+because this is called as an `after-save-hook', so that could
+lead to an infinite loop.")
 
 (defun ham-mode--save-as-html ()
   "Take the current markdown buffer, and OVERWRITE its file with HTML.
@@ -133,7 +142,8 @@ the current buffer."
             (buffer-string)))
     (when (= return 0)
       (write-region output nil file nil t)
-      output)))
+      output)
+    (run-hook-with-args 'ham-mode-md2html-hook file)))
 
 ;;;###autoload
 (define-derived-mode ham-mode markdown-mode "Ham"
