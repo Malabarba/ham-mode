@@ -36,3 +36,11 @@ For instance, the following snippet will activate `ham-mode` in any
         (add-to-list 'auto-mode-alist '(".*email.*\\.html?\\'" . ham-mode))
 
 
+Example
+----
+
+[This post here][] was written using `ham-mode`:  
+![Markdown](https://raw.github.com/Bruce-Connor/ham-mode/master/plus.png)
+
+[This post here]: #
+
