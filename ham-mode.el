@@ -124,7 +124,8 @@ this is an `after-save-hook', that will happen every time the
 buffer is saved, and the file will remain an HTMLized version of
 the current buffer."
   (interactive)
-  (unless (file-executable-p (car ham-mode-markdown-command))
+  (unless (and (car ham-mode-markdown-command)
+	       (file-executable-p (car ham-mode-markdown-command)))
     (error "Can't find the markdown executable! Is it installed? See `ham-mode-markdown-command'"))
   (let ((file (buffer-file-name))
         output return)
