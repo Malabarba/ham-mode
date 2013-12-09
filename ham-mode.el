@@ -104,7 +104,15 @@ Unfortunately, this variable depends on the implementation so you
 might have to tweak it. Some versions of the markdown command
 need an \"--html4tags\" argument in order to produce the right
 output, while other versions will give an error if you pass them
-that argument."
+that argument.
+Meanwhile, other implementations require that you specifically
+enable some features.
+
+If your executable isn't generating good results (some don't
+support all features) you can try to install pandoc and set this
+variable to:
+
+    '(\"pandoc\" \"--from\" \"markdown\" \"--to\" \"html\" \"--standalone\" file)"
   :type '(cons (string :tag "Path to the markdown command.")
                (repeat (choice (const :tag "The file being edited." file)
                                (string :tag "String argument."))))
