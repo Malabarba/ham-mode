@@ -15,7 +15,7 @@ comparison to Emacs (obviously).
 
 This major mode will allow you edit your email (or whatever else
 you're writing) with the full power of `markdown-mode`. In fact, you
-will usually be able to write richer structures then client's web
+will usually be able to write richer structures than the client's web
 interface would normally allow you to (lists within lists, for
 instance). Just check out `C-h C-f markdown-mode RET` to see the full
 range of commands available for editing.
