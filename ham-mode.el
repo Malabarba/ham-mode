@@ -88,17 +88,21 @@ Please include your emacs and ham-mode versions."
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Here starts ham-mode
 (defcustom ham-mode-markdown-command
-  (list (or (executable-find "markdown")
-            (executable-find "Markdown"))
-        ;; "--html4tags"
-        'file)
+  (if (executable-find "pandoc")
+      (list (executable-find "pandoc")
+            "--from" "markdown"
+            "--to" "html"
+            "--standalone" 'file)
+    (list (or (executable-find "markdown")
+              (executable-find "Markdown"))
+          ;; "--html4tags"
+          'file))
   "Command used to convert markdown contents into hmtl.
 
 This variable is a list:
-  First element is the full path to the markdown executable.
-  Other elements are either the symbol 'file (replaced with the
-  filename), or strings (arguments to the passed to the
-  executable).
+  - First element is the full path to the markdown executable.
+  - Other elements are either the symbol 'file (replaced with the
+    filename) or strings (arguments to the passed to the executable).
 
 Unfortunately, this variable depends on the implementation so you
 might have to tweak it. Some versions of the markdown command
