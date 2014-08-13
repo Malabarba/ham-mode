@@ -87,7 +87,7 @@ Please include your emacs and ham-mode versions."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Here starts ham-mode
-(defcustom ham-mode-markdown-command
+(defcustom ham-mode-markdown-to-html-command
   (if (executable-find "pandoc")
       (list (executable-find "pandoc")
             "--from" "markdown"
@@ -117,12 +117,41 @@ support all features) you can try to install pandoc and set this
 variable to:
 
     '(\"pandoc\" \"--from\" \"markdown\" \"--to\" \"html\" \"--standalone\" file)"
-  :type '(cons (string :tag "Path to the markdown command.")
-               (repeat (choice (const :tag "The file being edited." file)
-                               (string :tag "String argument."))))
+  :type '(cons (string :tag "Path to the markdown command")
+               (repeat (choice (const :tag "The file being edited" file)
+                               (string :tag "String argument"))))
   :group 'html-to-markdown
   :package-version '(ham-mode . "1.1.1"))
-(put 'ham-mode-markdown-command 'risky-local-variable-p t)
+(put 'ham-mode-markdown-to-html-command 'risky-local-variable-p t)
+
+(defcustom ham-mode-html-to-markdown-command
+  (if (executable-find "pandoc")
+      (list (executable-find "pandoc")
+            "--from" "html"
+            "--to" "markdown"
+            "--standalone" 'file)
+    nil)
+  "Command used to convert html contents into markdown.
+
+This variable is either nil, which means that the
+html-to-markdown elisp package will be used instead of an
+external command, or a list in which:
+  - First element is the full path to the markdown executable.
+  - Other elements are either the symbol 'file (replaced with the
+    filename) or strings (arguments to the passed to the executable).
+
+If you want an external html to markdown converter you can try to
+install pandoc and set this variable to:
+
+    '(\"pandoc\" \"--from\" \"html\" \"--to\" \"markdown\" \"--standalone\" file)"
+  :type '(choice (const :tag "Use the html-to-markdown package" nil)
+                 (cons :tag "Use external command"
+                       (string :tag "Path to the html to markdown converter")
+                       (repeat (choice (const :tag "The file being edited" file)
+                                       (string :tag "String argument")))))
+  :group 'html-to-markdown
+  :package-version '(ham-mode . "1.1.1"))
+(put 'ham-mode-html-to-markdown-command 'risky-local-variable-p t)
 
 (defvar ham-mode-md2html-hook nil
   "Hook run after the Markdown buffer is saved as HTML.
@@ -131,6 +160,28 @@ Functions in this hook must take one argument, the file name.
 They also shouldn't call `save-buffer' or anything like that,
 because this is called as an `after-save-hook', so that could
 lead to an infinite loop.")
+
+(defun ham-mode--run-conversion (command)
+  (unless (and (car command)
+	       (file-executable-p (car command)))
+    (error "Can't find the markdown executable! Is it installed? See `command'"))
+  (let ((file (buffer-file-name))
+        output return)
+    (unless file
+      (error (substitute-command-keys "This buffer isn't visiting a file. \\[write-file] to save it.")))
+    (setq output 
+          (with-temp-buffer
+            (setq return
+                  (apply 'call-process
+                         (car command)
+                         nil t nil
+                         (mapcar
+                          (lambda (x) (if (eq x 'file) file x))
+                          (cdr command))))
+            (buffer-string)))
+    (if (/= return 0)
+        (error "markdown command failed with output:\n%s" output)
+      output)))
 
 (defun ham-mode--save-as-html ()
   "Take the current markdown buffer, and OVERWRITE its file with HTML.
@@ -145,27 +196,21 @@ this is an `after-save-hook', that will happen every time the
 buffer is saved, and the file will remain an HTMLized version of
 the current buffer."
   (interactive)
-  (unless (and (car ham-mode-markdown-command)
-	       (file-executable-p (car ham-mode-markdown-command)))
-    (error "Can't find the markdown executable! Is it installed? See `ham-mode-markdown-command'"))
-  (let ((file (buffer-file-name))
-        output return)
-    (unless file
-      (error (substitute-command-keys "This buffer isn't visiting a file. \\[write-file] to save it.")))
-    (setq output 
-          (with-temp-buffer
-            (setq return
-                  (apply 'call-process
-                         (car ham-mode-markdown-command)
-                         nil t nil
-                         (mapcar
-                          (lambda (x) (if (eq x 'file) file x))
-                          (cdr ham-mode-markdown-command))))
-            (buffer-string)))
-    (if (/= return 0)
-        (error "markdown command failed with output:\n%s" output)
-      (write-region output nil file nil t)
-      (run-hook-with-args 'ham-mode-md2html-hook file))))
+  (write-region
+   (ham-mode--run-conversion ham-mode-markdown-to-html-command)
+   nil (buffer-file-name) nil t)
+  (run-hook-with-args 'ham-mode-md2html-hook (buffer-file-name)))
+
+(defun ham-mode--convert-to-markdown ()
+  (if ham-mode-html-to-markdown-command
+      (save-excursion
+        (erase-buffer)
+        (insert
+         (ham-mode--run-conversion ham-mode-html-to-markdown-command))
+        (goto-char (point-min)))
+    ;; no external command, default to using the html-to-markdown package
+    (html-to-markdown-this-buffer))
+  (set-buffer-modified-p nil))
 
 ;;;###autoload
 (define-derived-mode ham-mode markdown-mode "Ham"
@@ -183,11 +228,10 @@ command (handled entirely in elisp by this package :-D).
 
 Subsequent conversions (after every save) are handled by the
 markdown executable (which needs to be installed on your system).
-See `ham-mode-markdown-command' and `ham-mode--save-as-html' on
+See `ham-mode-markdown-to-html-command' and `ham-mode--save-as-html' on
 how to customize this part."
   :group 'html-to-markdown
-  (html-to-markdown-this-buffer)
-  (set-buffer-modified-p nil)
+  (ham-mode--convert-to-markdown)
   (add-hook 'after-save-hook 'ham-mode--save-as-html nil :local))
 
 (provide 'ham-mode)
