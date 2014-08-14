@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/ham-mode
-;; Version: 1.1.1
+;; Version: 1.1.2
 ;; Package-Requires: ((html-to-markdown "1.2") (markdown-mode "2.0"))
 ;; Keywords: convenience emulation wp
 ;; Prefix: ham
@@ -67,6 +67,7 @@
 ;; 
 
 ;;; Change Log:
+;; 1.1.2 - 2014/08/14 - Add option to use external program for HTML to markdown conversion
 ;; 1.1.1 - 2013/12/09 - Fix html4tags in ham-mode-markdown-command.
 ;; 1.1   - 2013/12/07 - ham-mode-md2html-hook.
 ;; 1.0   - 2013/12/05 - Created File.
@@ -74,7 +75,7 @@
 (require 'html-to-markdown)
 (require 'markdown-mode)
 
-(defconst ham-mode-version "1.1.1" "Version of the ham-mode.el package.")
+(defconst ham-mode-version "1.1.2" "Version of the ham-mode.el package.")
 (defconst ham-mode-version-int 3 "Version of the ham-mode.el package, as an integer.")
 (defun ham-bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
@@ -121,8 +122,9 @@ variable to:
                (repeat (choice (const :tag "The file being edited" file)
                                (string :tag "String argument"))))
   :group 'html-to-markdown
-  :package-version '(ham-mode . "1.1.1"))
+  :package-version '(ham-mode . "1.1.2"))
 (put 'ham-mode-markdown-to-html-command 'risky-local-variable-p t)
+(defvaralias 'ham-mode-markdown-command 'ham-mode-markdown-to-html-command)
 
 (defcustom ham-mode-html-to-markdown-command
   (if (executable-find "pandoc")
@@ -150,7 +152,7 @@ install pandoc and set this variable to:
                        (repeat (choice (const :tag "The file being edited" file)
                                        (string :tag "String argument")))))
   :group 'html-to-markdown
-  :package-version '(ham-mode . "1.1.1"))
+  :package-version '(ham-mode . "1.1.2"))
 (put 'ham-mode-html-to-markdown-command 'risky-local-variable-p t)
 
 (defvar ham-mode-md2html-hook nil
