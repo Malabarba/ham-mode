@@ -124,7 +124,6 @@ variable to:
   :group 'html-to-markdown
   :package-version '(ham-mode . "1.1.2"))
 (put 'ham-mode-markdown-to-html-command 'risky-local-variable-p t)
-(defvaralias 'ham-mode-markdown-command 'ham-mode-markdown-to-html-command)
 
 (defcustom ham-mode-html-to-markdown-command
   (if (executable-find "pandoc")
@@ -154,6 +153,7 @@ install pandoc and set this variable to:
   :group 'html-to-markdown
   :package-version '(ham-mode . "1.1.2"))
 (put 'ham-mode-html-to-markdown-command 'risky-local-variable-p t)
+(defvaralias 'ham-mode-markdown-command 'ham-mode-html-to-markdown-command)
 
 (defvar ham-mode-md2html-hook nil
   "Hook run after the Markdown buffer is saved as HTML.
