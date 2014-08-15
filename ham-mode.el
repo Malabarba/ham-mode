@@ -92,7 +92,7 @@ Please include your emacs and ham-mode versions."
       (list (executable-find "pandoc")
             "--from" "markdown"
             "--to" "html"
-            "--standalone" 'file)
+            'file)
     (list (or (executable-find "markdown")
               (executable-find "Markdown"))
           ;; "--html4tags"
@@ -116,34 +116,34 @@ If your executable isn't generating good results (some don't
 support all features) you can try to install pandoc and set this
 variable to:
 
-    '(\"pandoc\" \"--from\" \"markdown\" \"--to\" \"html\" \"--standalone\" file)"
+    '(\"pandoc\" \"--from\" \"markdown\" \"--to\" \"html\" file)"
   :type '(cons (string :tag "Path to the markdown command")
                (repeat (choice (const :tag "The file being edited" file)
                                (string :tag "String argument"))))
   :group 'html-to-markdown
   :package-version '(ham-mode . "1.1.1"))
 (put 'ham-mode-markdown-to-html-command 'risky-local-variable-p t)
+(defvaralias 'ham-mode-markdown-command 'ham-mode-markdown-to-html-command)
 
 (defcustom ham-mode-html-to-markdown-command
-  (if (executable-find "pandoc")
-      (list (executable-find "pandoc")
-            "--from" "html"
-            "--to" "markdown"
-            "--standalone" 'file)
-    nil)
+  'html-to-markdown-this-buffer
   "Command used to convert html contents into markdown.
+This variable is either:
 
-This variable is either nil, which means that the
-html-to-markdown elisp package will be used instead of an
-external command, or a list in which:
-  - First element is the full path to the markdown executable.
-  - Other elements are either the symbol 'file (replaced with the
+1) a function, which will be called with no arguments and is
+expected to convert the current buffer from html format to
+markdown format.
+
+2) a list which represents an external command to be run:
+  - First element is the full path to the executable.
+  - Other elements are either the symbol 'file (which is replaced with the
     filename) or strings (arguments to the passed to the executable).
+  This command is expected to convert the file from html to markdown.
 
-If you want an external html to markdown converter you can try to
-install pandoc and set this variable to:
+If you have Pandoc installed, for instance, you could set this
+variable to:
 
-    '(\"pandoc\" \"--from\" \"html\" \"--to\" \"markdown\" \"--standalone\" file)"
+    '(\"pandoc\" \"--from\" \"html\" \"--to\" \"markdown\" file)"
   :type '(choice (const :tag "Use the html-to-markdown package" nil)
                  (cons :tag "Use external command"
                        (string :tag "Path to the html to markdown converter")
@@ -202,14 +202,17 @@ the current buffer."
   (run-hook-with-args 'ham-mode-md2html-hook (buffer-file-name)))
 
 (defun ham-mode--convert-to-markdown ()
-  (if ham-mode-html-to-markdown-command
+  (if (listp ham-mode-html-to-markdown-command)
       (save-excursion
         (erase-buffer)
         (insert
          (ham-mode--run-conversion ham-mode-html-to-markdown-command))
         (goto-char (point-min)))
     ;; no external command, default to using the html-to-markdown package
-    (html-to-markdown-this-buffer))
+    (if (fboundp ham-mode-html-to-markdown-command)
+        (funcall ham-mode-html-to-markdown-command)
+      (error "`%s' should be a list or a function"
+             'ham-mode-html-to-markdown-command)))
   (set-buffer-modified-p nil))
 
 ;;;###autoload
