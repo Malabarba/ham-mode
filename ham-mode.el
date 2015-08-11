@@ -162,9 +162,9 @@ because this is called as an `after-save-hook', so that could
 lead to an infinite loop.")
 
 (defun ham-mode--run-conversion (command)
-  (unless (and (car command)
-	       (file-executable-p (car command)))
-    (error "Can't find the markdown executable! Is it installed? See `command'"))
+  (unless (and (car-safe command)
+               (executable-find (car command)))
+    (error "Can't find the markdown executable! Is it installed? See `ham-mode-markdown-to-html-command'"))
   (let ((file (buffer-file-name))
         output return)
     (unless file
@@ -173,7 +173,7 @@ lead to an infinite loop.")
           (with-temp-buffer
             (setq return
                   (apply 'call-process
-                         (car command)
+                         (executable-find (car command))
                          nil t nil
                          (mapcar
                           (lambda (x) (if (eq x 'file) file x))
