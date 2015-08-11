@@ -1,4 +1,4 @@
-;;; ham-mode.el --- Html As Markdown. Transparently edit an html file using markdown.
+;;; ham-mode.el --- Html As Markdown. Transparently edit an html file using markdown  -*- lexical-binding:t -*-
 
 ;; Copyright (C) 2013 Artur Malabarba <bruce.connor.am@gmail.com>
 
