@@ -4,7 +4,7 @@
 
 ;; Author: Artur Malabarba <bruce.connor.am@gmail.com>
 ;; URL: http://github.com/Bruce-Connor/ham-mode
-;; Version: 1.1.1
+;; Version: 1.1.2
 ;; Package-Requires: ((html-to-markdown "1.2") (markdown-mode "2.0"))
 ;; Keywords: convenience emulation wp
 ;; Prefix: ham
@@ -74,8 +74,8 @@
 (require 'html-to-markdown)
 (require 'markdown-mode)
 
-(defconst ham-mode-version "1.1.1" "Version of the ham-mode.el package.")
-(defconst ham-mode-version-int 3 "Version of the ham-mode.el package, as an integer.")
+(defconst ham-mode-version "1.1.2" "Version of the ham-mode.el package.")
+(defconst ham-mode-version-int 4 "Version of the ham-mode.el package, as an integer.")
 (defun ham-bug-report ()
   "Opens github issues page in a web browser. Please send any bugs you find.
 Please include your emacs and ham-mode versions."
